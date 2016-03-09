@@ -1,1 +1,23 @@
-Hello World!
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('bundles/acmeapp/css/style.css') }}">
+{% endblock %}
+
+{% block title %}
+	Mon super title !
+{% endblock %}
+
+{% block body %}
+	Ma liste :
+	<ul>
+		{% include "@AcmeApp/list.html.twig" %}</ul>
+	<p>Price : {{ '5500'|price }}</p>
+	<p>Price Euro : {{ '2500'|priceEuro }}</p>
+	<p>To TTC : {{ '645'|toTTC(20) }}</p>
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('bundles/acmeapp/js/script.js') }}"></script>
+{% endblock %}
+

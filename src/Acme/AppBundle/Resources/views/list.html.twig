@@ -1,0 +1,5 @@
+{% for item in links %}
+	<li>
+		<a href="{{ item['url'] }}" target="_blank">{{ item['name'] }}</a> <span>Crée le {{ item['created']|date("d/m/Y") }}</span>
+	</li>
+{% endfor %}
