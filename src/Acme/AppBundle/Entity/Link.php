@@ -2,12 +2,14 @@
 
 namespace Acme\AppBundle\Entity;
 
+use AppBundle\Constraint\AvoidStress;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+// @AvoidStress() fait planter
+
 /**
  * Link
- *
  * @ORM\Table(name="link")
  * @ORM\Entity(repositoryClass="Acme\AppBundle\Repository\LinkRepository")
  */
@@ -187,4 +189,15 @@ class Link
     {
         return $this->createdAt;
     }
+
+	/**
+	 * Validate the url is not from facebook
+	 * @Assert\IsTrue(message="Ne partagez pas de liens Facebook.")
+	 */
+	public function isNotFromFacebook()
+	{
+		return !preg_match('/^https?:\/\/(www.)?facebook.com/', $this->getUrl());
+	}
+
+
 }

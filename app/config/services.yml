@@ -12,3 +12,8 @@ services:
     public: false
     tags:
       - { name: twig.extension }
+  app.validator.avoid_stress_validator:
+    class: AppBundle\Constraint\Validator\AvoidStressValidator
+    arguments: [ @doctrine.orm.entity_manager ]
+    tags:
+        - { name: validator.constraint_validator, alias: avoid_stress_validator }
