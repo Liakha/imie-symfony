@@ -3,8 +3,11 @@
 namespace AppBundle\Entity;
 
 use AppBundle\Constraint\AvoidStress;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Link
@@ -15,6 +18,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Link
 {
+    use TimestampableEntity;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -28,14 +38,15 @@ class Link
      * @var string
      * @Assert\NotNull()
      * @ORM\Column(name="name", type="string", length=55)
+     * @Gedmo\Translatable
      */
     private $name;
 
     /**
-     * @var string
+     * @var Category
      *
      * @Assert\NotNull()
-     * @ORM\Column(name="category", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category", inversedBy="link")
      */
     private $category;
 
@@ -58,18 +69,15 @@ class Link
     private $url;
 
     /**
-     * @var \DateTime
-     *
-     * @Assert\NotNull()
-     * @ORM\Column(name="createdAt", type="datetime")
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Tag", inversedBy="link")
+     * @ORM\JoinTable(name="links_tags")
      */
-    private $createdAt;
-
+    protected $tags;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -101,11 +109,11 @@ class Link
 
     /**
      * Set category
+     * @param Category $category
      *
-     * @param string $category
      * @return Link
      */
-    public function setCategory($category)
+    public function setCategory(Category $category)
     {
         $this->category = $category;
 
@@ -115,7 +123,7 @@ class Link
     /**
      * Get category
      *
-     * @return string 
+     * @return Category
      */
     public function getCategory()
     {
@@ -169,34 +177,27 @@ class Link
     }
 
     /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     * @return Link
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime 
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
      * Validate the url is not from facebook
      * @Assert\IsTrue(message="Ne partagez pas de liens Facebook.")
      */
     public function isNotFromFacebook()
     {
         return !preg_match('/^https?:\/\/(www.)?facebook.com/', $this->getUrl());
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Tag[] $tags
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
     }
 }
